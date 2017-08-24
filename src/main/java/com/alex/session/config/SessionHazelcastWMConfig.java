@@ -19,7 +19,6 @@ import com.hazelcast.web.spring.SpringAwareWebFilter;
 @Configuration
 public class SessionHazelcastWMConfig {
 
-	// @Bean
 	public WebFilter webFilter(HazelcastInstance hazelcastInstance) {
 
 		Properties properties = new Properties();
@@ -36,12 +35,10 @@ public class SessionHazelcastWMConfig {
 		FilterRegistrationBean registration = new FilterRegistrationBean();
 		registration.setFilter(webFilter(hazelcastInstance));
 		registration.addUrlPatterns("/*");
-		registration.addInitParameter("sticky-session", "false");
-		registration.setName("springAwareWebFilter");
-		registration.setOrder(1);
+		registration.setOrder(Integer.MIN_VALUE);
 		return registration;
 	}
-
+	
 	@Bean
 	public SessionRegistry sessionRegistry() {
 
