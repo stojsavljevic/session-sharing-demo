@@ -2,11 +2,11 @@ package com.alex.session.config;
 
 import java.util.Properties;
 
+import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.boot.web.servlet.ServletListenerRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
-import org.springframework.context.annotation.PropertySource;
 import org.springframework.security.core.session.SessionRegistry;
 import org.springframework.security.core.session.SessionRegistryImpl;
 
@@ -17,17 +17,29 @@ import com.hazelcast.web.spring.SpringAwareWebFilter;
 
 @Profile("hazelcast-wm")
 @Configuration
-@PropertySource("classpath:hazelcast-wm.properties")
 public class SessionHazelcastWMConfig {
 
-	@Bean
+	// @Bean
 	public WebFilter webFilter(HazelcastInstance hazelcastInstance) {
 
 		Properties properties = new Properties();
 		properties.put("instance-name", hazelcastInstance.getName());
+		properties.put("map-name", "sessions");
 		properties.put("sticky-session", "false");
 
 		return new SpringAwareWebFilter(properties);
+	}
+
+	@Bean
+	public FilterRegistrationBean someFilterRegistration(HazelcastInstance hazelcastInstance) {
+
+		FilterRegistrationBean registration = new FilterRegistrationBean();
+		registration.setFilter(webFilter(hazelcastInstance));
+		registration.addUrlPatterns("/*");
+		registration.addInitParameter("sticky-session", "false");
+		registration.setName("springAwareWebFilter");
+		registration.setOrder(1);
+		return registration;
 	}
 
 	@Bean
