@@ -53,3 +53,6 @@ Two `application.properties` need to have different:
 ## Testing
 
 For testing race conditions of the appllication (with two instances) one can use `session-sharing-test` applicaion.
+
+
+asdasd
